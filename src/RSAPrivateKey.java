@@ -4,7 +4,7 @@ import java.math.BigInteger;
  * Created by Scott on 15/5/24.
  */
 public class RSAPrivateKey {
-    private BigInteger d, N;
+    private BigInteger d, n;
 
     public BigInteger getD() {
         return d;
@@ -15,10 +15,10 @@ public class RSAPrivateKey {
     }
 
     public BigInteger getN() {
-        return N;
+        return n;
     }
 
     public void setN(BigInteger n) {
-        N = n;
+        this.n = n;
     }
 }
