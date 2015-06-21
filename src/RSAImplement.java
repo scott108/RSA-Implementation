@@ -10,11 +10,13 @@ public class RSAImplement {
     private RSAPrivateKey rsaPrivateKey;
     private BigInteger e, N;
     private BigInteger d;
+    private int bitLength;
 
     public RSAKeyPair generateKeyPair(int bitLength) {
         SecureRandom seed = new SecureRandom();
         BigInteger p = new BigInteger(bitLength / 2, 100, seed);
         BigInteger q = new BigInteger(bitLength / 2, 100, seed);
+        this.bitLength = bitLength;
 
         System.out.println("P = " + p);
         System.out.println("Q = " + q);
@@ -54,11 +56,41 @@ public class RSAImplement {
     }
 
     public byte[] encrypt(String plaintext, RSAPublicKey rsaPublicKey) {
-        return (new BigInteger(plaintext.getBytes())).modPow(rsaPublicKey.getE(), rsaPublicKey.getN()).toByteArray();
+
+        // Convert to bytes
+        byte[] plainBytes = plaintext.getBytes();
+
+        byte[] encryptionBytes = new byte[bitLength / 8];
+
+        encryptionBytes[0] = 0; // Leading 0
+        encryptionBytes[1] = 1; // Block type
+
+        // Padding String
+        int paddingEnd = (bitLength / 8) - plainBytes.length - 2;
+        for (int i = 2; i < paddingEnd; i++) {
+            encryptionBytes[i] = (byte) 0xff;
+        }
+
+        // Actual data
+        System.arraycopy(plainBytes, 0, encryptionBytes, paddingEnd + 1, plainBytes.length);
+
+        return (new BigInteger(1, encryptionBytes)).modPow(rsaPublicKey.getE(), rsaPublicKey.getN()).toByteArray();
     }
 
     public String decrypt(byte[] ciphertext, RSAPrivateKey rsaPrivateKey) {
-        return new String(new BigInteger(ciphertext).modPow(rsaPrivateKey.getD(), rsaPrivateKey.getN()).toByteArray());
+
+        // Decrypt
+        byte[] decryptedBytes = (new BigInteger(1, ciphertext)).modPow(rsaPrivateKey.getD(), rsaPrivateKey.getN()).toByteArray();
+
+        // Extract msg
+        int msgStart = 0;
+        do {
+        }while(decryptedBytes[msgStart++] != 0);
+
+        byte finalBytes[] = new byte[decryptedBytes.length - msgStart];
+        System.arraycopy(decryptedBytes, msgStart, finalBytes, 0, finalBytes.length);
+
+        return new String(finalBytes);
     }
 
 }

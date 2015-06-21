@@ -23,7 +23,7 @@ public class Main {
         RSAPrivateKey rsaPrivateKey = rsaImplement.getPrivateKey(rsaKeyPair);
 
         //plaintext
-        String plaintext = "Hello world!!Hello world!!Hello world!!Hello world!!Hello world!!Hello world!!Hello world!!";
+        String plaintext = "Hello world!!";
 
         long startEncrypt = System.currentTimeMillis();
 
