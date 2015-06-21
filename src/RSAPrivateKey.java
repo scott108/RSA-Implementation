@@ -4,21 +4,21 @@ import java.math.BigInteger;
  * Created by Scott on 15/5/24.
  */
 public class RSAPrivateKey {
-    private BigInteger d, n;
+    private BigInteger privateExponent, modulus;
 
-    public BigInteger getD() {
-        return d;
+    public BigInteger getPrivateExponent() {
+        return privateExponent;
     }
 
-    public void setD(BigInteger d) {
-        this.d = d;
+    public void setPrivateExponent(BigInteger privateExponent) {
+        this.privateExponent = privateExponent;
     }
 
-    public BigInteger getN() {
-        return n;
+    public BigInteger getModulus() {
+        return modulus;
     }
 
-    public void setN(BigInteger n) {
-        this.n = n;
+    public void setModulus(BigInteger modulus) {
+        this.modulus = modulus;
     }
 }

@@ -8,8 +8,8 @@ public class RSAImplement {
 
     private RSAPublicKey rsaPublicKey;
     private RSAPrivateKey rsaPrivateKey;
-    private BigInteger e, N;
-    private BigInteger d;
+    private BigInteger publicExponent, modulus;
+    private BigInteger privateExponent;
     private int bitLength;
 
     public RSAKeyPair generateKeyPair(int bitLength) {
@@ -18,24 +18,26 @@ public class RSAImplement {
         BigInteger q = new BigInteger(bitLength / 2, 100, seed);
         this.bitLength = bitLength;
 
-        System.out.println("P = " + p);
-        System.out.println("Q = " + q);
-
-        N = p.multiply(q);
+        modulus = p.multiply(q);
 
         BigInteger fiN = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
 
-        e = new BigInteger("3");
-        while (fiN.gcd(e).intValue() > 1) {
-            e = e.add(new BigInteger("2"));
-        }
-        d = e.modInverse(fiN);
+        /*publicExponent = new BigInteger("3");
+        while (fiN.gcd(publicExponent).intValue() > 1) {
+            publicExponent = publicExponent.add(new BigInteger("2"));
+        }*/
+        publicExponent = new BigInteger("65537");
+        privateExponent = publicExponent.modInverse(fiN);
 
 
         RSAKeyPair rsaKeyPair = new RSAKeyPair();
-        rsaKeyPair.setN(N);
-        rsaKeyPair.setE(e);
-        rsaKeyPair.setD(d);
+        rsaKeyPair.setModulus(modulus);
+        rsaKeyPair.setPublicExponent(publicExponent);
+        rsaKeyPair.setPrivateExponent(privateExponent);
+
+        System.out.println("Modulus = " + modulus);
+        System.out.println("publicExponent = " + publicExponent);
+        System.out.println("privateExponent = " + privateExponent);
 
         return rsaKeyPair;
 
@@ -43,15 +45,15 @@ public class RSAImplement {
 
     public RSAPublicKey getPublicKey(RSAKeyPair rsaKeyPair) {
         rsaPublicKey = new RSAPublicKey();
-        rsaPublicKey.setN(rsaKeyPair.getN());
-        rsaPublicKey.setE(rsaKeyPair.getE());
+        rsaPublicKey.setModulus(rsaKeyPair.getModulus());
+        rsaPublicKey.setPublicExponent(rsaKeyPair.getPublicExponent());
         return rsaPublicKey;
     }
 
     public RSAPrivateKey getPrivateKey(RSAKeyPair rsaKeyPair) {
         rsaPrivateKey = new RSAPrivateKey();
-        rsaPrivateKey.setD(rsaKeyPair.getD());
-        rsaPrivateKey.setN(rsaKeyPair.getN());
+        rsaPrivateKey.setPrivateExponent(rsaKeyPair.getPrivateExponent());
+        rsaPrivateKey.setModulus(rsaKeyPair.getModulus());
         return rsaPrivateKey;
     }
 
@@ -74,13 +76,13 @@ public class RSAImplement {
         // Actual data
         System.arraycopy(plainBytes, 0, encryptionBytes, paddingEnd + 1, plainBytes.length);
 
-        return (new BigInteger(1, encryptionBytes)).modPow(rsaPublicKey.getE(), rsaPublicKey.getN()).toByteArray();
+        return (new BigInteger(1, encryptionBytes)).modPow(rsaPublicKey.getPublicExponent(), rsaPublicKey.getModulus()).toByteArray();
     }
 
     public String decrypt(byte[] ciphertext, RSAPrivateKey rsaPrivateKey) {
 
         // Decrypt
-        byte[] decryptedBytes = (new BigInteger(1, ciphertext)).modPow(rsaPrivateKey.getD(), rsaPrivateKey.getN()).toByteArray();
+        byte[] decryptedBytes = (new BigInteger(1, ciphertext)).modPow(rsaPrivateKey.getPrivateExponent(), rsaPrivateKey.getModulus()).toByteArray();
 
         // Extract msg
         int msgStart = 0;

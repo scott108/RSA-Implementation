@@ -4,21 +4,21 @@ import java.math.BigInteger;
  * Created by Scott on 15/5/24.
  */
 public class RSAPublicKey {
-    private BigInteger n, e;
+    private BigInteger modulus, publicExponent;
 
-    public BigInteger getN() {
-        return n;
+    public BigInteger getModulus() {
+        return modulus;
     }
 
-    public void setN(BigInteger n) {
-        this.n = n;
+    public void setModulus(BigInteger modulus) {
+        this.modulus = modulus;
     }
 
-    public BigInteger getE() {
-        return e;
+    public BigInteger getPublicExponent() {
+        return publicExponent;
     }
 
-    public void setE(BigInteger e) {
-        this.e = e;
+    public void setPublicExponent(BigInteger publicExponent) {
+        this.publicExponent = publicExponent;
     }
 }
